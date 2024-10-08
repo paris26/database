@@ -1,7 +1,6 @@
 import React from "react";
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -9,16 +8,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { FormFieldType } from "./forms/PatientForm";
-import { Control, FieldValues } from "react-hook-form";
+import { Control } from "react-hook-form";
 import Image from "next/image";
 import PhoneInput from "react-phone-number-input";
 import { E164Number } from "libphonenumber-js/core";
 import "react-phone-number-input/style.css";
-import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-interface CustomProps<T extends FieldValues> {
+interface CustomProps {
   control: Control<any>;
   fieldType: FormFieldType;
   name: string;
@@ -33,12 +31,12 @@ interface CustomProps<T extends FieldValues> {
   renderSkeleton?: (field: any) => React.ReactNode;
 }
 
-const RenderField = <T extends FieldValues>({
+const RenderField = ({
   field,
   props,
 }: {
   field: any;
-  props: CustomProps<T>;
+  props: CustomProps;
 }) => {
   const {
     fieldType,
@@ -47,8 +45,8 @@ const RenderField = <T extends FieldValues>({
     placeholder,
     showTimeSelect,
     dateFormat,
+    renderSkeleton,
   } = props;
-  const [startDate, setStartDate] = useState(new Date());
 
   switch (fieldType) {
     case FormFieldType.INPUT:
@@ -107,16 +105,15 @@ const RenderField = <T extends FieldValues>({
             />
           </FormControl>
         </div>
-        //  TODO: create the skeleton case and then create the docs to accompany it
-      );
-    case FormFieldType.SKELETON:
-
+      )
+      case FormFieldType.SKELETON:
+        return renderSkeleton ? renderSkeleton(field) : null;
     default:
       return null;
   }
 };
 
-const CustomFormField = <T extends FieldValues>(props: CustomProps<T>) => {
+const CustomFormField = (props: CustomProps) => {
   const { control, fieldType, name, label } = props;
 
   return (

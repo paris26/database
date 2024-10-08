@@ -3,17 +3,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Form, FormControl, FormField } from "@/components/ui/form";
+import { Form, FormControl } from "@/components/ui/form";
 import CustomFormField from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
 import { useState } from "react";
-import UserFormValidation from "@/lib/validation";
+import { UnemployedFormValidation, UserFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/lib/actions/unemployed.actions";
 import { FormFieldType } from "./PatientForm";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
-import { GenderOptions } from "@/constants";
+import { AgeGroup, EducationLevel, EmploymentStatus, GenderOptions, JobSearchStatus, PreviousIndustry, SkillLevel } from "@/constants";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const RegisterForm = ({ user }: { user: User }) => {
@@ -23,8 +23,8 @@ const RegisterForm = ({ user }: { user: User }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // 1. Define your form.
-  const form = useForm<z.infer<typeof UserFormValidation>>({
-    resolver: zodResolver(UserFormValidation),
+  const form = useForm<z.infer<typeof UnemployedFormValidation>>({
+    resolver: zodResolver(UnemployedFormValidation),
 
     defaultValues: {
       name: "",
@@ -60,9 +60,9 @@ const RegisterForm = ({ user }: { user: User }) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-12 flex-1"
+        className="flex-1 space-y-12"
       >
-        <section className="mb-12 space-y-4 text-center justify-center">
+        <section className="mb-12">
           <h1 className="header">Γεια σας</h1>
           <p className="text-dark-700">Παρακαλούμε, εισάγετε τα στοιχεία σας</p>
         </section>
@@ -72,6 +72,7 @@ const RegisterForm = ({ user }: { user: User }) => {
             <h2 className="sub-header">Προσωπικές Πληροφορίες</h2>
           </div>
         </section>
+
         <div className="flex flex-col gap-6 xl:flex-row">
           <CustomFormField
             fieldType={FormFieldType.INPUT}
@@ -91,7 +92,7 @@ const RegisterForm = ({ user }: { user: User }) => {
           />
         </div>
 
-        <div className="flex flex-col gap-6 xl:flex-row">
+        <div className="flex flex-col gap-3 xl:flex-row">
           <CustomFormField
             fieldType={FormFieldType.DATE_PICKER}
             control={form.control}
@@ -106,17 +107,16 @@ const RegisterForm = ({ user }: { user: User }) => {
             renderSkeleton={(field) => (
               <FormControl>
                 <RadioGroup
-                  onValueChange={field.change}
+                  onValueChange={field.onChange}
                   defaultValue={field.value}
-                  className="h-11 flex gap-6 xl:justify-between"
+                  className="h-11 flex gap-2 xl:justify-between"
                 >
                   {GenderOptions.map((option) => (
                     <div key={option} className="radio-group">
-                      <RadioGroupItem id={option} value={option}>
-                        <Label htmlFor={option} className="cursor-pointer">
-                          {option}
-                        </Label>
-                      </RadioGroupItem>
+                      <RadioGroupItem id={option} value={option} />
+                      <Label htmlFor={option} className="cursor-pointer">
+                        {option}
+                      </Label>
                     </div>
                   ))}
                 </RadioGroup>
@@ -124,28 +124,30 @@ const RegisterForm = ({ user }: { user: User }) => {
             )}
           />
         </div>
-        {/* TODO: Create type for other attributes in /constants/index/ts   */}
-
-        {/* <div className="flex flex-col gap-6 xl:flex-row">
+        <section className="space-y-6">
+          <div className="mb-12 space-y-1">
+            <h2 className="sub-header">Εργασιακές Πληροφορίες</h2>
+          </div>
+        </section>
+        <div className="flex flex-col gap-6">
           <CustomFormField
             fieldType={FormFieldType.SKELETON}
             control={form.control}
-            name="Gender"
-            label="Φύλο"
+            name="EducationLevel"
+            label="Επίπεδο Εκπαίδευσης"
             renderSkeleton={(field) => (
               <FormControl>
                 <RadioGroup
-                  onValueChange={field.change}
+                  onValueChange={field.onChange}
                   defaultValue={field.value}
-                  className="h-11 flex gap-6 xl:justify-between"
+                  className="h-11 flex gap-2 xl:justify-between"
                 >
-                  {GenderOptions.map((option) => (
+                  {EducationLevel.map((option) => (
                     <div key={option} className="radio-group">
-                      <RadioGroupItem id={option} value={option}>
-                        <Label htmlFor={option} className="cursor-pointer">
-                          {option}
-                        </Label>
-                      </RadioGroupItem>
+                      <RadioGroupItem id={option} value={option} />
+                      <Label htmlFor={option} className="cursor-pointer">
+                        {option}
+                      </Label>
                     </div>
                   ))}
                 </RadioGroup>
@@ -155,29 +157,124 @@ const RegisterForm = ({ user }: { user: User }) => {
           <CustomFormField
             fieldType={FormFieldType.SKELETON}
             control={form.control}
-            name="Gender"
-            label="Φύλο"
+            name="EmploymentStatus"
+            label="Εργασιακή  Κατάσταση"
             renderSkeleton={(field) => (
               <FormControl>
                 <RadioGroup
-                  onValueChange={field.change}
+                  onValueChange={field.onChange}
                   defaultValue={field.value}
-                  className="h-11 flex gap-6 xl:justify-between"
+                  className="h-11 flex gap-2 xl:justify-between"
                 >
-                  {GenderOptions.map((option) => (
+                  {EmploymentStatus.map((option) => (
                     <div key={option} className="radio-group">
-                      <RadioGroupItem id={option} value={option}>
-                        <Label htmlFor={option} className="cursor-pointer">
-                          {option}
-                        </Label>
-                      </RadioGroupItem>
+                      <RadioGroupItem id={option} value={option} />
+                      <Label htmlFor={option} className="cursor-pointer">
+                        {option}
+                      </Label>
                     </div>
                   ))}
                 </RadioGroup>
               </FormControl>
             )}
           />
-        </div> */}
+          <CustomFormField
+            fieldType={FormFieldType.SKELETON}
+            control={form.control}
+            name="SkillLevel"
+            label="Επίπεδο Γνώσης"
+            renderSkeleton={(field) => (
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="h-11 flex gap-2 xl:justify-between"
+                >
+                  {SkillLevel.map((option) => (
+                    <div key={option} className="radio-group">
+                      <RadioGroupItem id={option} value={option} />
+                      <Label htmlFor={option} className="cursor-pointer">
+                        {option}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </FormControl>
+            )}
+          />
+          <CustomFormField
+            fieldType={FormFieldType.SKELETON}
+            control={form.control}
+            name="JobSearchStatus"
+            label="Κατάσταση Αναζήτησης Εργασίας"
+            renderSkeleton={(field) => (
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="h-11 flex gap-2 xl:justify-between"
+                >
+                  {JobSearchStatus.map((option) => (
+                    <div key={option} className="radio-group">
+                      <RadioGroupItem id={option} value={option} />
+                      <Label htmlFor={option} className="cursor-pointer">
+                        {option}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </FormControl>
+            )}
+          />
+          <CustomFormField
+            fieldType={FormFieldType.SKELETON}
+            control={form.control}
+            name="PreviousIndustry"
+            label="Προηγούμενη Βιομηχανία"
+            renderSkeleton={(field) => (
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="grid grid-cols-2 sm:grid-cols-3 gap-2"
+                >
+                  {PreviousIndustry.map((option) => (
+                    <div key={option} className="radio-group">
+                      <RadioGroupItem id={option} value={option} />
+                      <Label htmlFor={option} className="cursor-pointer">
+                        {option}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </FormControl>
+            )}
+          />
+          <CustomFormField
+            fieldType={FormFieldType.SKELETON}
+            control={form.control}
+            name="AgeGroup"
+            label="Ηλικιακή Ομάδα"
+            renderSkeleton={(field) => (
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="h-11 flex gap-2 xl:justify-between"
+                >
+                  {AgeGroup.map((option) => (
+                    <div key={option} className="radio-group">
+                      <RadioGroupItem id={option} value={option} />
+                      <Label htmlFor={option} className="cursor-pointer">
+                        {option}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </FormControl>
+            )}
+          />
+        </div>
 
         <SubmitButton isLoading={isLoading}>Υποβολή</SubmitButton>
       </form>
