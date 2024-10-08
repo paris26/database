@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Form } from "@/components/ui/form";
+import { Form, FormControl, FormField } from "@/components/ui/form";
 import CustomFormField from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
 import { useState } from "react";
@@ -11,6 +11,9 @@ import UserFormValidation from "@/lib/validation";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/lib/actions/unemployed.actions";
 import { FormFieldType } from "./PatientForm";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Label } from "../ui/label";
+import { GenderOptions } from "@/constants";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const RegisterForm = ({ user }: { user: User }) => {
@@ -87,15 +90,95 @@ const RegisterForm = ({ user }: { user: User }) => {
             placeholder="+30 69 123 123 12"
           />
         </div>
-        <CustomFormField
-          fieldType={FormFieldType.INPUT}
-          control={form.control}
-          name="name"
-          label="Ονοματεπώνυμο"
-          placeholder="Εισάγετε το ονοματεπώνυμο σας"
-          iconSrc="/assets/icons/user.svg"
-          iconAlt="User"
-        />
+
+        <div className="flex flex-col gap-6 xl:flex-row">
+          <CustomFormField
+            fieldType={FormFieldType.DATE_PICKER}
+            control={form.control}
+            name="birthDate"
+            label="Ημερομηνία Γέννησης"
+          />
+          <CustomFormField
+            fieldType={FormFieldType.SKELETON}
+            control={form.control}
+            name="Gender"
+            label="Φύλο"
+            renderSkeleton={(field) => (
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.change}
+                  defaultValue={field.value}
+                  className="h-11 flex gap-6 xl:justify-between"
+                >
+                  {GenderOptions.map((option) => (
+                    <div key={option} className="radio-group">
+                      <RadioGroupItem id={option} value={option}>
+                        <Label htmlFor={option} className="cursor-pointer">
+                          {option}
+                        </Label>
+                      </RadioGroupItem>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </FormControl>
+            )}
+          />
+        </div>
+        {/* TODO: Create type for other attributes in /constants/index/ts   */}
+
+        {/* <div className="flex flex-col gap-6 xl:flex-row">
+          <CustomFormField
+            fieldType={FormFieldType.SKELETON}
+            control={form.control}
+            name="Gender"
+            label="Φύλο"
+            renderSkeleton={(field) => (
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.change}
+                  defaultValue={field.value}
+                  className="h-11 flex gap-6 xl:justify-between"
+                >
+                  {GenderOptions.map((option) => (
+                    <div key={option} className="radio-group">
+                      <RadioGroupItem id={option} value={option}>
+                        <Label htmlFor={option} className="cursor-pointer">
+                          {option}
+                        </Label>
+                      </RadioGroupItem>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </FormControl>
+            )}
+          />
+          <CustomFormField
+            fieldType={FormFieldType.SKELETON}
+            control={form.control}
+            name="Gender"
+            label="Φύλο"
+            renderSkeleton={(field) => (
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.change}
+                  defaultValue={field.value}
+                  className="h-11 flex gap-6 xl:justify-between"
+                >
+                  {GenderOptions.map((option) => (
+                    <div key={option} className="radio-group">
+                      <RadioGroupItem id={option} value={option}>
+                        <Label htmlFor={option} className="cursor-pointer">
+                          {option}
+                        </Label>
+                      </RadioGroupItem>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </FormControl>
+            )}
+          />
+        </div> */}
+
         <SubmitButton isLoading={isLoading}>Υποβολή</SubmitButton>
       </form>
     </Form>

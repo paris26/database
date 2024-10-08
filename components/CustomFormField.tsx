@@ -14,6 +14,9 @@ import Image from "next/image";
 import PhoneInput from "react-phone-number-input";
 import { E164Number } from "libphonenumber-js/core";
 import "react-phone-number-input/style.css";
+import { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface CustomProps<T extends FieldValues> {
   control: Control<any>;
@@ -37,7 +40,15 @@ const RenderField = <T extends FieldValues>({
   field: any;
   props: CustomProps<T>;
 }) => {
-  const { fieldType, iconSrc, iconAlt, placeholder } = props;
+  const {
+    fieldType,
+    iconSrc,
+    iconAlt,
+    placeholder,
+    showTimeSelect,
+    dateFormat,
+  } = props;
+  const [startDate, setStartDate] = useState(new Date());
 
   switch (fieldType) {
     case FormFieldType.INPUT:
@@ -75,6 +86,31 @@ const RenderField = <T extends FieldValues>({
           />
         </FormControl>
       );
+    case FormFieldType.DATE_PICKER:
+      return (
+        <div className="flex rounded-md border border-dark-500 bg-dark-400">
+          <Image
+            src="/assets/icons/calendar.svg"
+            alt="calendar"
+            width={24}
+            height={24}
+            className="ml-2"
+          />
+          <FormControl>
+            <DatePicker
+              selected={field.value}
+              onChange={(date) => field.onChange(date)}
+              showTimeSelect={showTimeSelect ?? false}
+              dateFormat={dateFormat ?? "MM/dd/yyyy"}
+              timeInputLabel="Time:"
+              wrapperClassName="date-picker"
+            />
+          </FormControl>
+        </div>
+        //  TODO: create the skeleton case and then create the docs to accompany it
+      );
+    case FormFieldType.SKELETON:
+
     default:
       return null;
   }
