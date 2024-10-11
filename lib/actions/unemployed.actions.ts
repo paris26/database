@@ -68,3 +68,7 @@ export const getUser = async (userId : string) => {
     console.log(error);
   }
 }
+
+// TODO: finish this function
+export const createUnemployed = async ({...unemployed}: RegisterUserParams) => {
+  )

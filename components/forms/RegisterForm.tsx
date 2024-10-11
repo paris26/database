@@ -7,13 +7,12 @@ import { Form, FormControl } from "@/components/ui/form";
 import CustomFormField from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
 import { useState } from "react";
-import { UnemployedFormValidation, UserFormValidation } from "@/lib/validation";
+import { UnemployedFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
-import { createUser } from "@/lib/actions/unemployed.actions";
 import { FormFieldType } from "./PatientForm";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
-import { AgeGroup, EducationLevel, EmploymentStatus, GenderOptions, JobSearchStatus, PreviousIndustry, SkillLevel } from "@/constants";
+import { AgeGroup, EducationLevel, EmploymentStatus, GenderOptions, JobSearchStatus, PreviousIndustry, SkillLevel, UnemployedFormDefaultValues } from "@/constants";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const RegisterForm = ({ user }: { user: User }) => {
@@ -27,6 +26,7 @@ const RegisterForm = ({ user }: { user: User }) => {
     resolver: zodResolver(UnemployedFormValidation),
 
     defaultValues: {
+      ...UnemployedFormDefaultValues,
       name: "",
       email: "",
       phone: "",
@@ -34,27 +34,47 @@ const RegisterForm = ({ user }: { user: User }) => {
   });
 
   // 2. Define a submit handler.
-  async function onSubmit({
-    name,
-    email,
-    phone,
-  }: z.infer<typeof UserFormValidation>) {
-    setIsLoading(true);
+ const onSubmit = async (values: z.infer<typeof UnemployedFormValidation>) => {
+   setIsLoading(true);
 
-    try {
-      //TODO: Add API call here
+   //store file in form data as a blob
+    let formData;
+    if (
+      values.identificationDocument &&
+      values.identificationDocument.length > 0
+    ) {
+        const blobFile = new Blob([values.identificationDocument[0]], {
+            type: values.identificationDocument[0].type,
+        })
 
-      const userData = { name, email, phone };
-
-      const user = await createUser(userData);
-
-      if (user) console.log(user);
-
-      if (user) router.push("unemployed/${user.id}/register");
-    } catch (e) {
-      console.error(e);
+        formData = new FormData();
+        formData.append("blobFile", blobFile);
+        formData.append("fileName", values.identificationDocument[0].name);
     }
-  }
+
+    //TODO: Add API call here
+    try{
+      const unemployed = {
+        name: values.name,
+        email: values.email,
+        phone: values.phone,
+        gender: values.gender,
+        ageGroup: values.ageGroup,
+        educationLevel: values.educationLevel,
+        employmentStatus: values.employmentStatus,
+        jobSearchStatus: values.jobSearchStatus,
+        previousIndustry: values.previousIndustry,
+        skillLevel: values.skillLevel,
+        identificationDocument: values.identificationDocument ? formData : undefined,
+      };
+
+      const newUnemployed = await createUnemployed(unemployed);
+      if(newUnemployed) router.push("/unemployed/${newUnemployed.id}/prediction");
+
+    }catch(e){
+      console.log(e);
+    }
+ }
 
   return (
     <Form {...form}>

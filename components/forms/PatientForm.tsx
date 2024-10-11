@@ -30,7 +30,7 @@ const PatientForm = () => {
   // 1. Define your form.
   const form = useForm<z.infer<typeof UserFormValidation>>({
     resolver: zodResolver(UserFormValidation),
-    
+
     defaultValues: {
       name: "",
       email: "",
@@ -43,16 +43,16 @@ const PatientForm = () => {
       setIsLoading(true);
 
       try{
-        
-        //TODO: Add API call here         
+
+        //TODO: Add API call here
 
         const userData = { name, email , phone}
 
         const user =  await createUser(userData);
-        
+
         if(user) console.log(user);
 
-        if(user) router.push("unemployed/${user.id}/register"); 
+        if(user) router.push("unemployed/${user.id}/register");
 
       }catch(e){
         console.error(e);

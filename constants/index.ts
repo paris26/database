@@ -12,29 +12,19 @@ export const PreviousIndustry = ["Τράπεζες", "Τηλεπικοινωνί
 
 export const AgeGroup = ["18-24", "25-34", "35-44", "45-54", "55-64", "65+"];
 
-// TODO: Change the default values
+
 export const UnemployedFormDefaultValues = {
   firstName: "",
   lastName: "",
   email: "",
   phone: "",
-  birthDate: new Date(Date.now()),
-  gender: "Male" as Gender,
-  address: "",
-  occupation: "",
-  emergencyContactName: "",
-  emergencyContactNumber: "",
-  primaryPhysician: "",
-  insuranceProvider: "",
-  insurancePolicyNumber: "",
-  allergies: "",
-  currentMedication: "",
-  familyMedicalHistory: "",
-  pastMedicalHistory: "",
-  identificationType: "Birth Certificate",
-  identificationNumber: "",
+  gender : "Άνδρας" as Gender,
+  ageGroup: "18-24" as AgeGroup,
+  educationLevel: "Δημοτικό" as EducationLevel,
+  employmentStatus: "Ανέργος" as EmploymentStatus,
+  jobSearchStatus: "Ενεργός" as JobSearchStatus,
+  previousIndustry: "Τράπεζες" as previousIndustry,
+  skills: "",
+  skillsLevel: "Αρχάριος" as SkillLevel,
   identificationDocument: [],
-  treatmentConsent: false,
-  disclosureConsent: false,
-  privacyConsent: false,
 };
